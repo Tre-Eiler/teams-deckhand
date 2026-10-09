@@ -43,7 +43,7 @@ client of it.
 
 **Download** the installer, `Deckhand.<version>.pkg`, from the
 [latest release](https://github.com/Tre-Eiler/teams-deckhand/releases/latest) (currently
-[1.4.0](https://github.com/Tre-Eiler/teams-deckhand/releases/download/v1.4.0/Deckhand.1.4.0.pkg)),
+[1.5.1](https://github.com/Tre-Eiler/teams-deckhand/releases/download/v1.5.1/Deckhand.1.5.1.pkg)),
 or build it yourself (needs Xcode or the Command Line Tools, and Node 20+):
 
 ```bash

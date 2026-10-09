@@ -79,7 +79,8 @@
             "Name": "Status Panel",
             "UUID": "com.teams-bridge.streamdeck.neo-status",
             "Icon": "imgs/actions/neo-status/icon",
-            "Tooltip": "Shows time/date and call/mic/camera status on the Stream Deck Neo info panel.",
+            "PropertyInspectorPath": "ui/neo-status.html",
+            "Tooltip": "Shows the time, date, call/mic/camera status and the auto-mute countdown on the Stream Deck Neo info panel.",
             "Controllers": [
                 "Neo"
             ],

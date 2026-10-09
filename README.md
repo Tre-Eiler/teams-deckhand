@@ -94,7 +94,17 @@ Actions, under the **Deckhand** category:
   key's settings) so a stray tap can't drop you; a quick tap flashes an alert.
   It only *leaves*, never "End meeting for everyone".
 - **Auto-Mute Toggle / Timeout / Add Time** — see [Auto-mute](#auto-mute).
-- **Status Panel** — drag onto the Neo's info strip.
+- **Status Panel** — drag onto the Neo's info strip. Shows the time and date, with
+  mic and camera badges during a call, and takes over the whole panel for the last
+  seconds of an auto-mute countdown. Its settings (select the panel in the Stream
+  Deck app) let you:
+  - hide the **mic** or **camera** badge,
+  - switch to a **24-hour clock**,
+  - turn the **countdown** off, and choose how long it shows (last 10, 20 or 30
+    seconds) and its style: **Fill** (the panel drains from green to amber to red,
+    and the text flips light/dark as the fill passes under it) or **Tint** (a dim
+    drain behind text that takes the state color). If auto-mute can't hear your
+    mic it shows **Paused**.
 
 ## Auto-mute
 

@@ -118,9 +118,9 @@ class BridgeClient {
 		return this.post(`/automute/add?seconds=${seconds}`);
 	}
 
-	/** Fetches the current rendered Neo panel image as a data: URI. */
-	async fetchNeoPanel(): Promise<string | null> {
-		return this.fetchImage("/neo-panel.png");
+	/** Fetches the current rendered Neo panel image as a data: URI; `query` carries the panel's settings. */
+	async fetchNeoPanel(query = ""): Promise<string | null> {
+		return this.fetchImage(query ? `/neo-panel.png?${query}` : "/neo-panel.png");
 	}
 
 	/** Fetches a daemon-rendered key image (path includes any query string) as a data: URI. */

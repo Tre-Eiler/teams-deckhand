@@ -10,7 +10,7 @@
 # and, once installed, hands the Stream Deck plugin to Stream Deck.
 #
 #   ./package.sh                 build with the default version
-#   VERSION=1.4.0 ./package.sh   build a specific version
+#   VERSION=1.5.0 ./package.sh   build a specific version
 #
 # The result is unsigned (no Developer ID certificate), so the first time it's
 # opened on another Mac Gatekeeper asks you to approve it (System Settings >
@@ -18,7 +18,7 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
-VERSION="${VERSION:-1.4.0}"
+VERSION="${VERSION:-1.5.0}"
 BUILD="$(date +%Y%m%d%H%M)"
 WORK="dist/.pkg-build"
 PKG_PATH="dist/Deckhand ${VERSION}.pkg"

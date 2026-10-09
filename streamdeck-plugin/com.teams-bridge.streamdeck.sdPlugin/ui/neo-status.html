@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<title>Status Panel Settings</title>
+		<meta charset="utf-8" />
+		<script src="sdpi-components.js"></script>
+	</head>
+
+	<body>
+		<sdpi-item label="Clock">
+			<sdpi-checkbox setting="use24Hour" label="24-hour clock"></sdpi-checkbox>
+		</sdpi-item>
+		<sdpi-item label="During a call">
+			<sdpi-checkbox setting="showMic" label="Show microphone status" default></sdpi-checkbox>
+		</sdpi-item>
+		<sdpi-item>
+			<sdpi-checkbox setting="showCamera" label="Show camera status" default></sdpi-checkbox>
+		</sdpi-item>
+		<sdpi-item label="Auto-mute">
+			<sdpi-checkbox setting="showCountdown" label="Show countdown" default></sdpi-checkbox>
+		</sdpi-item>
+		<sdpi-item label="Show during">
+			<sdpi-select setting="countdownWindow" default="10">
+				<option value="10">Last 10 seconds</option>
+				<option value="20">Last 20 seconds</option>
+				<option value="30">Last 30 seconds</option>
+			</sdpi-select>
+		</sdpi-item>
+		<sdpi-item label="Style">
+			<sdpi-select setting="countdownStyle" default="fill">
+				<option value="fill">Fill, text flips as it drains</option>
+				<option value="tint">Tint, text changes color</option>
+			</sdpi-select>
+		</sdpi-item>
+		<sdpi-item>
+			<details>
+				<summary>How the countdown works</summary>
+				<p>
+					While auto-mute is counting down to mute your mic, the whole panel becomes the countdown for the last few
+					seconds, then goes back to the clock. The fill drains as time runs out, turning from green to amber to red.
+					If auto-mute can't hear your microphone it shows <b>Paused</b> instead. The mic and camera badges only
+					appear during a call.
+				</p>
+			</details>
+		</sdpi-item>
+	</body>
+</html>

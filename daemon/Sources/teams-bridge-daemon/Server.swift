@@ -98,9 +98,13 @@ final class BridgeServer {
             .ok(.json(self?.autoMuteDetails?() ?? [:]))
         }
 
-        localServer["/neo-panel.png"] = { [weak self] _ in
+        // The panel's settings (mic, camera, 24-hour clock, countdown) arrive in
+        // the query string; the same auto-mute overrides as the key images let
+        // a face be previewed without a live call.
+        localServer["/neo-panel.png"] = { [weak self] request in
             guard let status = self?.statusProvider?() else { return .internalServerError }
-            return Self.png(NeoPanelRenderer.render(status: status))
+            return Self.png(NeoPanelRenderer.render(status: Self.autoMuteState(in: request, fallback: status),
+                                                    options: Self.neoOptions(in: request)))
         }
         // The key images are a pure function of their query string (the state
         // to draw is passed in: timeout, enabled, remaining), so a client that
@@ -211,6 +215,20 @@ final class BridgeServer {
         status.autoMuteRemainingSeconds = intParam("remaining", in: request)
         status.autoMuteHolding = (intParam("holding", in: request) ?? 0) != 0
         return status
+    }
+
+    private static func neoOptions(in request: HttpRequest) -> NeoPanelOptions {
+        func flag(_ name: String, _ fallback: Bool) -> Bool { intParam(name, in: request).map { $0 != 0 } ?? fallback }
+        var options = NeoPanelOptions()
+        options.showMic = flag("mic", options.showMic)
+        options.showCamera = flag("camera", options.showCamera)
+        options.use24Hour = flag("h24", options.use24Hour)
+        options.showCountdown = flag("countdown", options.showCountdown)
+        if let window = intParam("window", in: request) { options.countdownWindowSeconds = min(max(window, 1), 3600) }
+        if let style = request.queryParams.first(where: { $0.0 == "style" }).flatMap({ NeoPanelOptions.CountdownStyle(rawValue: $0.1) }) {
+            options.countdownStyle = style
+        }
+        return options
     }
 
     private static func png(_ data: Data) -> HttpResponse {

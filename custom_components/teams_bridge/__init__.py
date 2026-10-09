@@ -1,6 +1,6 @@
-"""Teams Bridge: Microsoft Teams call, microphone and camera state in Home Assistant.
+"""Deckhand: Microsoft Teams call, microphone and camera state in Home Assistant.
 
-Connects to the Teams Bridge macOS app's read-only status feed and mirrors it
+Connects to the Deckhand macOS app's read-only status feed and mirrors it
 as entities. Reporting only — nothing here can control Teams.
 """
 from __future__ import annotations

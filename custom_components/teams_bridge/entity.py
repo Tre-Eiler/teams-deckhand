@@ -1,4 +1,4 @@
-"""Shared base for Teams Bridge entities."""
+"""Shared base for Deckhand entities."""
 from __future__ import annotations
 
 from homeassistant.const import CONF_HOST, CONF_PORT
@@ -10,7 +10,7 @@ from .const import DOMAIN
 
 
 class TeamsBridgeEntity(Entity):
-    """An entity that mirrors one field of the Teams Bridge status feed."""
+    """An entity that mirrors one field of the Deckhand status feed."""
 
     _attr_has_entity_name = True
     _attr_should_poll = False
@@ -21,8 +21,8 @@ class TeamsBridgeEntity(Entity):
         self._attr_unique_id = f"{entry.entry_id}_{description.key}"
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, entry.entry_id)},
-            name=f"Teams Bridge ({entry.data[CONF_HOST]})",
-            manufacturer="Teams Bridge",
+            name=f"Deckhand ({entry.data[CONF_HOST]})",
+            manufacturer="Deckhand",
             model="macOS menu bar app",
             configuration_url=f"http://{entry.data[CONF_HOST]}:{entry.data[CONF_PORT]}/status",
         )

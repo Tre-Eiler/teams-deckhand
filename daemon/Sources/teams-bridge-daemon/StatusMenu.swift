@@ -26,7 +26,7 @@ final class StatusMenu: NSObject {
         statusItem.button?.title = "○"
 
         let menu = NSMenu()
-        menu.addItem(NSMenuItem(title: "Teams Bridge", action: nil, keyEquivalent: ""))
+        menu.addItem(NSMenuItem(title: "Deckhand", action: nil, keyEquivalent: ""))
         menu.addItem(.separator())
         detailItem.isEnabled = false
         menu.addItem(detailItem)
@@ -64,7 +64,7 @@ final class StatusMenu: NSObject {
         }
         menu.addItem(.separator())
 
-        let restartItem = NSMenuItem(title: "Restart Teams Bridge", action: #selector(restart), keyEquivalent: "")
+        let restartItem = NSMenuItem(title: "Restart Deckhand", action: #selector(restart), keyEquivalent: "")
         restartItem.target = self
         menu.addItem(restartItem)
 
@@ -97,7 +97,7 @@ final class StatusMenu: NSObject {
 
         // The most useful thing to say right now, in order of how blocking it is.
         if !health.accessibilityTrusted {
-            show(problem: "\u{26A0}\u{FE0F} Allow Teams Bridge in Privacy & Security \u{2192} \(Permissions.accessibilityPaneName)\u{2026}", actionable: true)
+            show(problem: "\u{26A0}\u{FE0F} Allow Deckhand in Privacy & Security \u{2192} \(Permissions.accessibilityPaneName)\u{2026}", actionable: true)
         } else if !health.teamsRunning {
             show(problem: "Teams isn't running", actionable: false)
         } else if status.autoMuteHolding {
@@ -117,7 +117,7 @@ final class StatusMenu: NSObject {
     }
 
     private static var bundledPluginURL: URL? {
-        Bundle.main.url(forResource: "Teams Bridge", withExtension: "streamDeckPlugin")
+        Bundle.main.url(forResource: "Deckhand", withExtension: "streamDeckPlugin")
     }
 
     @objc private func openAccessibilitySettings() {

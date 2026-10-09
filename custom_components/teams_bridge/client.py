@@ -1,8 +1,8 @@
-"""Push client for the Teams Bridge status feed.
+"""Push client for the Deckhand status feed.
 
 Deliberately free of Home Assistant imports so it can be tested on its own.
 
-The Teams Bridge macOS app serves a read-only feed on its network port:
+The Deckhand macOS app serves a read-only feed on its network port:
 ``GET /status`` (a snapshot) and ``/ws`` (a WebSocket that sends the current
 status on connect and again whenever it changes). Controls aren't reachable
 over the network by design; this integration only reports state.
@@ -26,7 +26,7 @@ HEARTBEAT_SECONDS = 20
 
 
 class TeamsBridgeClient:
-    """Keeps a WebSocket open to one Teams Bridge app and tracks its status."""
+    """Keeps a WebSocket open to one Deckhand app and tracks its status."""
 
     def __init__(self, session: aiohttp.ClientSession, host: str, port: int) -> None:
         self._session = session
@@ -60,7 +60,7 @@ class TeamsBridgeClient:
             response.raise_for_status()
             data = await response.json(content_type=None)
         if not isinstance(data, dict) or "inCall" not in data:
-            raise ValueError("That address doesn't look like Teams Bridge")
+            raise ValueError("That address doesn't look like Deckhand")
         return data
 
     async def async_run(self) -> None:
@@ -78,7 +78,7 @@ class TeamsBridgeClient:
             except asyncio.CancelledError:
                 raise
             except (aiohttp.ClientError, asyncio.TimeoutError, OSError) as err:
-                _LOGGER.debug("Teams Bridge connection to %s:%s failed: %s", self.host, self.port, err)
+                _LOGGER.debug("Deckhand connection to %s:%s failed: %s", self.host, self.port, err)
 
             self._set_connected(False)
             await asyncio.sleep(delay)
@@ -88,7 +88,7 @@ class TeamsBridgeClient:
         try:
             status = json.loads(data)
         except ValueError:
-            _LOGGER.debug("Ignoring malformed Teams Bridge frame")
+            _LOGGER.debug("Ignoring malformed Deckhand frame")
             return
         if not isinstance(status, dict):
             return

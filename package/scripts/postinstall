@@ -6,10 +6,10 @@
 # Never fails the install: if nobody is logged in the agent simply starts at
 # their next login, and a missing Stream Deck just means no plugin install.
 
-APP="/Applications/Teams Bridge.app"
+APP="/Applications/Deckhand.app"
 LABEL="com.teams-bridge.daemon"
 AGENT="/Library/LaunchAgents/$LABEL.plist"
-PLUGIN="$APP/Contents/Resources/Teams Bridge.streamDeckPlugin"
+PLUGIN="$APP/Contents/Resources/Deckhand.streamDeckPlugin"
 STREAM_DECK_BUNDLE_ID="com.elgato.StreamDeck"
 BUNDLE_ID="com.teams-bridge.daemon"
 LSREGISTER="/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework/Versions/A/Support/lsregister"
@@ -21,10 +21,18 @@ fi
 uid="$(id -u "$user")"
 home="$(dscl . -read "/Users/$user" NFSHomeDirectory 2>/dev/null | awk '{print $2}')"
 
+# Before the rename this app was installed as "Teams Bridge.app". Same bundle
+# ID and login agent, so the new one simply replaces it; just remove the old copy.
+OLD_APP="/Applications/Teams Bridge.app"
+if [ -d "$OLD_APP" ]; then
+    [ -x "$LSREGISTER" ] && "$LSREGISTER" -u "$OLD_APP" >/dev/null 2>&1
+fi
+
 # An earlier install put a per-user agent with this same label (and its own
 # copy of the binary) under the home folder. Remove it so only one runs; the
 # settings file next to it is kept — the new app reads the same one.
 launchctl bootout "gui/$uid/$LABEL" 2>/dev/null
+rm -rf "$OLD_APP"
 if [ -n "$home" ]; then
     rm -f "$home/Library/LaunchAgents/$LABEL.plist"
     rm -f "$home/Library/Application Support/TeamsBridge/teams-bridge-daemon"

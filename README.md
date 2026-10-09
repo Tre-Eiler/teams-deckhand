@@ -1,4 +1,4 @@
-# Teams Deckhand
+# Deckhand
 
 Run your Microsoft Teams calls from a Stream Deck, and let your smart home know
 when you're on one.
@@ -14,14 +14,14 @@ when you're on one.
   signs and Do-Not-Disturb automations.
 
 ```
-Teams  <-- Accessibility API -->  Teams Bridge (macOS menu bar app)
+Teams  <-- Accessibility API -->  Deckhand (macOS menu bar app)
                                     |-- Stream Deck plugin    (this Mac only, controls)
                                     |-- Homey app             (LAN, read-only status)
                                     '-- Home Assistant        (LAN, read-only status)
 ```
 
-The macOS app is called **Teams Bridge** and is the only thing that talks to
-Teams. Everything else is a thin client of it.
+The macOS app is the only thing that talks to Teams. Everything else is a thin
+client of it.
 
 > **Why Accessibility automation?** Teams' official local API
 > (`ws://localhost:8124`) was retired by Microsoft on 2026-06-30. The only way
@@ -48,11 +48,11 @@ the icons are drawn from Apple's SF Symbols, which can't be redistributed.
 git clone https://github.com/Tre-Eiler/teams-deckhand.git
 cd teams-deckhand
 (cd streamdeck-plugin && npm install)
-./package.sh        # builds dist/Teams Bridge <version>.pkg
+./package.sh        # builds dist/Deckhand <version>.pkg
 ```
 
 Double-click the `.pkg` (it needs an admin password). It installs
-`/Applications/Teams Bridge.app` (with the Stream Deck plugin inside) and a
+`/Applications/Deckhand.app` (with the Stream Deck plugin inside) and a
 login agent, starts it, and hands the plugin to Stream Deck, which asks you to
 confirm. The package is **unsigned**, so if Gatekeeper blocks it, approve it in
 **System Settings → Privacy & Security → Open Anyway** (a file you built
@@ -60,9 +60,9 @@ yourself or copied over USB/`scp` isn't quarantined and opens normally).
 
 Then:
 
-1. Allow **Teams Bridge** in **System Settings → Privacy & Security →
+1. Allow **Deckhand** in **System Settings → Privacy & Security →
    Accessibility** (called **Device Control and Data Access** on macOS 27).
-2. Drag actions from the **Teams Bridge** category onto your Stream Deck keys.
+2. Drag actions from the **Deckhand** category onto your Stream Deck keys.
 
 Microphone access is requested the first time you switch auto-mute on; the app
 only measures loudness, it never records or sends audio.
@@ -74,7 +74,7 @@ Uninstall:
 
 ```bash
 launchctl bootout "gui/$(id -u)/com.teams-bridge.daemon"
-sudo rm -rf "/Applications/Teams Bridge.app" /Library/LaunchAgents/com.teams-bridge.daemon.plist
+sudo rm -rf "/Applications/Deckhand.app" /Library/LaunchAgents/com.teams-bridge.daemon.plist
 rm -rf ~/Library/Application\ Support/TeamsBridge ~/Library/Logs/TeamsBridge   # settings and logs (optional)
 ```
 
@@ -82,7 +82,7 @@ then remove the plugin in Stream Deck's preferences.
 
 ## Stream Deck
 
-Actions, under the **Teams Bridge** category:
+Actions, under the **Deckhand** category:
 
 - **Mic Toggle**, **Camera Toggle** — icon follows the real Teams state.
 - **Raise Hand** — raises your hand and lowers it again after 5 seconds (or press
@@ -128,21 +128,30 @@ speakers reaching the mic count as speech; headphones avoid that.
 
 ## Homey
 
-[`homey-app/`](homey-app) is a Homey Apps SDK v3 app with a **Teams Status**
-device exposing *In a call*, *Microphone enabled* and *Camera enabled* as
-`alarm_generic` capabilities, so they work as Flow triggers. It runs on your
-Homey, not on the Mac:
+[`homey-app/`](homey-app) is a Homey Apps SDK v3 app. Its **Teams call status**
+device shows *In a call*, *Microphone on*, *Camera on*, *Hand raised* and
+*Auto-mute on*, each with its own Flow triggers ("Call started", "Microphone
+muted"…) and conditions. It shows as unavailable while the Mac is asleep or
+Deckhand isn't running.
+
+Install it on your Homey from source (an App Store listing is pending):
 
 ```bash
 cd homey-app
 npm install
 npx homey login
-npx homey app run         # or: npx homey app install
+npx homey app install     # or `npx homey app run` to develop with live logs
 ```
 
-Add the **Teams Status** device and set its **Daemon address** to your Mac's LAN
-address and port, e.g. `192.168.1.50:8942` (`localhost` won't work from the Homey
-itself). Find the address with `ipconfig getifaddr en0`.
+Then **Add device → Deckhand** and enter your Mac's address (`ipconfig getifaddr
+en0` shows it). Pairing checks that Deckhand answers before it adds anything,
+and you can add one device per Mac. If the Mac's address changes, edit it in the
+device's settings.
+
+**Publishing it yourself** (needs an Athom developer account): run `npx homey app
+validate --level publish`, then `npx homey app publish`, and submit the draft for
+certification in the [Homey developer tools](https://tools.developer.homey.app).
+The store images are drawn by `tools/render-homey-images.swift`.
 
 ## Home Assistant
 
@@ -155,7 +164,7 @@ repositories*, add this repository as type *Integration*, install **Teams
 Bridge**, restart Home Assistant. Or copy `custom_components/teams_bridge` into
 your config's `custom_components` folder and restart.
 
-**Set up** — *Settings → Devices & services → Add integration → Teams Bridge*,
+**Set up** — *Settings → Devices & services → Add integration → Deckhand*,
 then enter the Mac's address and port (`8942`).
 
 Entities:
@@ -181,7 +190,7 @@ automation:
   - alias: On-air light
     triggers:
       - trigger: state
-        entity_id: binary_sensor.teams_bridge_in_a_call   # check your entity ID
+        entity_id: binary_sensor.deckhand_in_a_call   # check your entity ID
         to: "on"
     actions:
       - action: light.turn_on
@@ -212,7 +221,7 @@ Click the **menu bar icon**: it says what's blocking things — Accessibility
 access not granted, Teams not running, no call detected, or "can't hear the
 microphone".
 
-If "Teams Bridge" is switched on in Settings but the menu still shows ⚠, the
+If "Deckhand" is switched on in Settings but the menu still shows ⚠, the
 entry is **stale**: macOS ties the grant to the app's code signature, and
 ad-hoc-signed builds get a new one every build. Use **Reset Permission & Ask
 Again…** in the menu (the installer also clears old entries on every upgrade).
@@ -241,12 +250,16 @@ curl "http://127.0.0.1:8943/diagnostics"
 ```text
 daemon/             macOS app (Swift package): AX automation, audio, servers, menu bar
 streamdeck-plugin/  Stream Deck plugin (TypeScript, @elgato/streamdeck v3)
-homey-app/          Homey Apps SDK v3 app
+homey-app/          Homey Apps SDK v3 app (store listing text in README.txt)
 custom_components/  Home Assistant integration
-tools/              render-icons.swift: draws every icon from SF Symbols
+tools/              render-icons.swift (Stream Deck icons from SF Symbols), render-homey-images.swift
 package/, package.sh  the macOS installer
 spike/              throwaway Accessibility explorer for diagnosing Teams UI changes
 ```
+
+Internal identifiers keep the project's original name, so existing installs and
+permissions carry over: bundle ID `com.teams-bridge.daemon`, the `TeamsBridge`
+settings and log folders, and the Home Assistant domain `teams_bridge`.
 
 Run the app from source beside an installed one (different ports, no permission
 prompt):

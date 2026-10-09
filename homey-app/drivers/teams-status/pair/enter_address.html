@@ -1,0 +1,36 @@
+<style>
+  .deckhand-error { color: var(--homey-color-red-500, #d33); margin: 0 0 var(--homey-su-2, 8px); min-height: 1.4em; }
+</style>
+
+<form class="homey-form" id="address-form">
+  <div class="homey-form-group">
+    <label class="homey-form-label" for="host" data-i18n="pair.address.label"></label>
+    <input class="homey-form-input" id="host" type="text" inputmode="url" autocapitalize="off" autocomplete="off" placeholder="192.168.1.50:8942" />
+  </div>
+  <p class="homey-text-small" data-i18n="pair.address.hint"></p>
+  <p class="deckhand-error" id="error" role="alert"></p>
+  <button class="homey-button-primary-full" id="connect" type="submit" data-i18n="pair.address.connect"></button>
+</form>
+
+<script>
+  Homey.setTitle(Homey.__('pair.address.title'));
+
+  const form = document.getElementById('address-form');
+  const input = document.getElementById('host');
+  const button = document.getElementById('connect');
+  const error = document.getElementById('error');
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    error.textContent = '';
+    button.disabled = true;
+    try {
+      await Homey.emit('validate', { host: input.value });
+      Homey.showView('list_devices');
+    } catch (err) {
+      error.textContent = err && err.message ? err.message : String(err);
+    } finally {
+      button.disabled = false;
+    }
+  });
+</script>

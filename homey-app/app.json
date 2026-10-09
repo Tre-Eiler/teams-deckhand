@@ -1,76 +1,173 @@
 {
-    "id": "com.teams-bridge",
-    "version": "1.0.0",
-    "compatibility": ">=12.4.0",
-    "sdk": 3,
-    "runtime": "nodejs",
-    "platforms": ["local"],
-    "name": { "en": "Teams Bridge" },
-    "description": { "en": "Reports Microsoft Teams call, mic, and camera status from the teams-bridge daemon." },
-    "category": ["tools"],
-    "brandColor": "#2D64B4",
-    "permissions": [],
-    "images": {
-        "small": "/assets/images/small.png",
-        "large": "/assets/images/large.png",
-        "xlarge": "/assets/images/xlarge.png"
-    },
-    "author": {
-        "name": "Tre Eiler"
-    },
-    "drivers": [
-        {
-            "id": "teams-status",
-            "name": { "en": "Teams Status" },
-            "class": "sensor",
-            "capabilities": [
-                "alarm_generic.in_call",
-                "alarm_generic.mic_enabled",
-                "alarm_generic.camera_enabled"
-            ],
-            "capabilitiesOptions": {
-                "alarm_generic.in_call": {
-                    "title": { "en": "In a Call" }
-                },
-                "alarm_generic.mic_enabled": {
-                    "title": { "en": "Microphone Enabled" }
-                },
-                "alarm_generic.camera_enabled": {
-                    "title": { "en": "Camera Enabled" }
-                }
-            },
-            "platforms": ["local"],
-            "connectivity": ["lan"],
-            "images": {
-                "small": "/drivers/teams-status/assets/images/small.png",
-                "large": "/drivers/teams-status/assets/images/large.png",
-                "xlarge": "/drivers/teams-status/assets/images/xlarge.png"
-            },
-            "pair": [
-                {
-                    "id": "list_devices",
-                    "template": "list_devices",
-                    "navigation": { "next": "add_devices" }
-                },
-                { "id": "add_devices", "template": "add_devices" }
-            ],
-            "settings": [
-                {
-                    "type": "group",
-                    "label": { "en": "teams-bridge daemon" },
-                    "children": [
-                        {
-                            "id": "bridgeHost",
-                            "type": "text",
-                            "label": { "en": "Daemon address (host:port)" },
-                            "value": "localhost:8942",
-                            "hint": {
-                                "en": "The LAN address of the Mac running the teams-bridge daemon, e.g. 192.168.1.50:8942."
-                            }
-                        }
-                    ]
-                }
-            ]
-        }
+  "id": "com.treeiler.deckhand",
+  "version": "1.0.0",
+  "compatibility": ">=12.4.0",
+  "sdk": 3,
+  "runtime": "nodejs",
+  "platforms": [
+    "local"
+  ],
+  "name": {
+    "en": "Deckhand"
+  },
+  "description": {
+    "en": "Know when you're in a Microsoft Teams call, and whether your mic and camera are on."
+  },
+  "tags": {
+    "en": [
+      "teams",
+      "microsoft teams",
+      "call",
+      "meeting",
+      "microphone",
+      "camera",
+      "stream deck",
+      "busy light",
+      "presence"
     ]
+  },
+  "category": [
+    "tools"
+  ],
+  "brandColor": "#2D64B4",
+  "permissions": [],
+  "images": {
+    "small": "/assets/images/small.png",
+    "large": "/assets/images/large.png",
+    "xlarge": "/assets/images/xlarge.png"
+  },
+  "author": {
+    "name": "Tre Eiler"
+  },
+  "source": "https://github.com/Tre-Eiler/teams-deckhand",
+  "homepage": "https://github.com/Tre-Eiler/teams-deckhand",
+  "support": "https://github.com/Tre-Eiler/teams-deckhand/issues",
+  "bugs": {
+    "url": "https://github.com/Tre-Eiler/teams-deckhand/issues"
+  },
+  "license": "MIT",
+  "drivers": [
+    {
+      "id": "teams-status",
+      "name": {
+        "en": "Teams call status"
+      },
+      "class": "sensor",
+      "capabilities": [
+        "alarm_generic.in_call",
+        "alarm_generic.mic_enabled",
+        "alarm_generic.camera_enabled",
+        "alarm_generic.hand_raised",
+        "alarm_generic.automute_enabled"
+      ],
+      "capabilitiesOptions": {
+        "alarm_generic.in_call": {
+          "title": {
+            "en": "In a call"
+          },
+          "titleTrue": {
+            "en": "Call started"
+          },
+          "titleFalse": {
+            "en": "Call ended"
+          }
+        },
+        "alarm_generic.mic_enabled": {
+          "title": {
+            "en": "Microphone on"
+          },
+          "titleTrue": {
+            "en": "Microphone turned on"
+          },
+          "titleFalse": {
+            "en": "Microphone muted"
+          }
+        },
+        "alarm_generic.camera_enabled": {
+          "title": {
+            "en": "Camera on"
+          },
+          "titleTrue": {
+            "en": "Camera turned on"
+          },
+          "titleFalse": {
+            "en": "Camera turned off"
+          }
+        },
+        "alarm_generic.hand_raised": {
+          "title": {
+            "en": "Hand raised"
+          },
+          "titleTrue": {
+            "en": "Hand raised"
+          },
+          "titleFalse": {
+            "en": "Hand lowered"
+          }
+        },
+        "alarm_generic.automute_enabled": {
+          "title": {
+            "en": "Auto-mute on"
+          },
+          "titleTrue": {
+            "en": "Auto-mute turned on"
+          },
+          "titleFalse": {
+            "en": "Auto-mute turned off"
+          }
+        }
+      },
+      "platforms": [
+        "local"
+      ],
+      "connectivity": [
+        "lan"
+      ],
+      "images": {
+        "small": "/drivers/teams-status/assets/images/small.png",
+        "large": "/drivers/teams-status/assets/images/large.png",
+        "xlarge": "/drivers/teams-status/assets/images/xlarge.png"
+      },
+      "pair": [
+        {
+          "id": "enter_address",
+          "navigation": {
+            "next": "list_devices"
+          }
+        },
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "settings": [
+        {
+          "type": "group",
+          "label": {
+            "en": "Deckhand on your Mac"
+          },
+          "children": [
+            {
+              "id": "bridgeHost",
+              "type": "text",
+              "label": {
+                "en": "Address (host:port)"
+              },
+              "value": "",
+              "hint": {
+                "en": "The LAN address of the Mac running Deckhand, e.g. 192.168.1.50:8942. Change it here if the Mac's address changes."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }

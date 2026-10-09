@@ -23,3 +23,5 @@ homey-app/env.json
 
 # macOS
 .DS_Store
+
+tools/render-homey-images

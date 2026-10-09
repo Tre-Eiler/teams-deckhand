@@ -6,7 +6,7 @@
     <string>com.teams-bridge.daemon</string>
     <key>ProgramArguments</key>
     <array>
-        <string>/Applications/Teams Bridge.app/Contents/MacOS/teams-bridge-daemon</string>
+        <string>/Applications/Deckhand.app/Contents/MacOS/teams-bridge-daemon</string>
     </array>
     <key>RunAtLoad</key>
     <true/>

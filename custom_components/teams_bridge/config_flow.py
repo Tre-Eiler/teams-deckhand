@@ -1,4 +1,4 @@
-"""Config flow: ask for the Mac's address and check that Teams Bridge answers."""
+"""Config flow: ask for the Mac's address and check that Deckhand answers."""
 from __future__ import annotations
 
 import asyncio
@@ -35,7 +35,7 @@ class TeamsBridgeConfigFlow(ConfigFlow, domain=DOMAIN):
                 errors["base"] = "cannot_connect"
             else:
                 return self.async_create_entry(
-                    title=f"Teams Bridge ({host})",
+                    title=f"Deckhand ({host})",
                     data={CONF_HOST: host, CONF_PORT: port},
                 )
 

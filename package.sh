@@ -1,8 +1,8 @@
 #!/bin/bash
-# Builds "Teams Bridge <version>.pkg" — a standard macOS installer package.
+# Builds "Deckhand <version>.pkg" — a standard macOS installer package.
 #
 # What the package installs:
-#   /Applications/Teams Bridge.app           universal (Apple silicon + Intel) menu bar
+#   /Applications/Deckhand.app           universal (Apple silicon + Intel) menu bar
 #                                            app: the daemon, its icon, and the Stream
 #                                            Deck plugin bundled inside
 #   /Library/LaunchAgents/com.teams-bridge.daemon.plist
@@ -10,7 +10,7 @@
 # and, once installed, hands the Stream Deck plugin to Stream Deck.
 #
 #   ./package.sh                 build with the default version
-#   VERSION=1.3.0 ./package.sh   build a specific version
+#   VERSION=1.4.0 ./package.sh   build a specific version
 #
 # The result is unsigned (no Developer ID certificate), so the first time it's
 # opened on another Mac Gatekeeper asks you to approve it (System Settings >
@@ -18,10 +18,10 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
-VERSION="${VERSION:-1.3.0}"
+VERSION="${VERSION:-1.4.0}"
 BUILD="$(date +%Y%m%d%H%M)"
 WORK="dist/.pkg-build"
-PKG_PATH="dist/Teams Bridge ${VERSION}.pkg"
+PKG_PATH="dist/Deckhand ${VERSION}.pkg"
 SD_PLUGIN_DIR="streamdeck-plugin/com.teams-bridge.streamdeck.sdPlugin"
 
 rm -rf "$WORK"
@@ -49,13 +49,13 @@ echo "==> Packing Stream Deck plugin..."
 PLUGIN_PKG="streamdeck-plugin/com.teams-bridge.streamdeck.streamDeckPlugin"
 [ -f "$PLUGIN_PKG" ] || { echo "Couldn't find the packed Stream Deck plugin." >&2; exit 1; }
 
-echo "==> Assembling Teams Bridge.app..."
-APP="$WORK/payload/Applications/Teams Bridge.app"
+echo "==> Assembling Deckhand.app..."
+APP="$WORK/payload/Applications/Deckhand.app"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 cp "$DAEMON_BIN" "$APP/Contents/MacOS/teams-bridge-daemon"
 sed -e "s/__VERSION__/$VERSION/" -e "s/__BUILD__/$BUILD/" package/Info.plist.template > "$APP/Contents/Info.plist"
 cp "$WORK/AppIcon.icns" "$APP/Contents/Resources/AppIcon.icns"
-cp "$PLUGIN_PKG" "$APP/Contents/Resources/Teams Bridge.streamDeckPlugin"
+cp "$PLUGIN_PKG" "$APP/Contents/Resources/Deckhand.streamDeckPlugin"
 # Drop what extended attributes can be dropped (e.g. quarantine). The OS-managed
 # com.apple.provenance can't be removed, and shows up as "._*" entries in the
 # payload — that's just how xattrs are stored; Installer merges them back as
@@ -71,7 +71,7 @@ xattr -cr "$WORK/payload"
 chmod 755 package/scripts/postinstall
 
 echo "==> Building installer package..."
-# The login agent points at /Applications/Teams Bridge.app, so the app must
+# The login agent points at /Applications/Deckhand.app, so the app must
 # not be relocated to wherever Installer finds another copy of the same bundle.
 pkgbuild --analyze --root "$WORK/payload" "$WORK/components.plist" >/dev/null
 /usr/libexec/PlistBuddy -c "Set :0:BundleIsRelocatable false" "$WORK/components.plist"

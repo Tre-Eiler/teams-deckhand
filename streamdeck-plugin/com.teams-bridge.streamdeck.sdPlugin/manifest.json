@@ -1,5 +1,5 @@
 {
-    "Name": "Teams Bridge",
+    "Name": "Deckhand",
     "Version": "1.0.0.0",
     "Author": "Tre Eiler",
     "Actions": [
@@ -173,7 +173,7 @@
             "SupportedInMultiActions": false
         }
     ],
-    "Category": "Teams Bridge",
+    "Category": "Deckhand",
     "CategoryIcon": "imgs/plugin/category-icon",
     "CodePath": "bin/plugin.js",
     "Description": "Mute/unmute, toggle camera, raise/lower hand, auto-mute after silence, and show call status in Microsoft Teams from your Stream Deck, backed by the local teams-bridge daemon.",

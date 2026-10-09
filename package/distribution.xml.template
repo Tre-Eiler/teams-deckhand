@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <installer-gui-script minSpecVersion="2">
-    <title>Teams Bridge</title>
+    <title>Deckhand</title>
     <welcome file="welcome.html" mime-type="text/html"/>
     <conclusion file="conclusion.html" mime-type="text/html"/>
 
@@ -12,7 +12,7 @@
         function checkSystem() {
             if (system.compareVersions(system.version.ProductVersion, '13.0') < 0) {
                 my.result.title = 'macOS 13 or later is required';
-                my.result.message = 'Teams Bridge needs macOS 13 (Ventura) or newer.';
+                my.result.message = 'Deckhand needs macOS 13 (Ventura) or newer.';
                 my.result.type = 'Fatal';
                 return false;
             }

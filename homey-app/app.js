@@ -2,8 +2,8 @@
 
 const Homey = require('homey');
 
-module.exports = class TeamsBridgeApp extends Homey.App {
+module.exports = class DeckhandApp extends Homey.App {
   async onInit() {
-    this.log('Teams Bridge app initialized');
+    this.log('Deckhand app initialized');
   }
 };

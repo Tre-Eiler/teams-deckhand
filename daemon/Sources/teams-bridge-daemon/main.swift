@@ -236,7 +236,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let arch = "x86_64"
         #endif
         let settings = autoMute.settings
-        Log.info("app", "Teams Bridge \(version) starting — \(ProcessInfo.processInfo.operatingSystemVersionString), \(arch)")
+        Log.info("app", "Deckhand \(version) starting — \(ProcessInfo.processInfo.operatingSystemVersionString), \(arch)")
         Log.info("app", "Accessibility \(engine.isAccessibilityTrusted ? "granted" : "NOT granted"); microphone \(audio.snapshot().authorization); Teams \(engine.isTeamsRunning ? "running" : "not running")")
         Log.info("app", "Auto-mute \(settings.enabled ? "on" : "off"), timeout \(settings.timeoutSeconds)s, input \(settings.inputDeviceName ?? "system default")")
     }
@@ -252,8 +252,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }()
         let fm = FileManager.default
         let root = fm.temporaryDirectory.appendingPathComponent("TeamsBridgeLogs-\(UUID().uuidString)", isDirectory: true)
-        let stage = root.appendingPathComponent("Teams Bridge Logs", isDirectory: true)
-        let archive = fm.temporaryDirectory.appendingPathComponent("Teams Bridge Logs \(stamp) \(UUID().uuidString.prefix(6)).zip")
+        let stage = root.appendingPathComponent("Deckhand Logs", isDirectory: true)
+        let archive = fm.temporaryDirectory.appendingPathComponent("Deckhand Logs \(stamp) \(UUID().uuidString.prefix(6)).zip")
         defer { try? fm.removeItem(at: root) }
         try? fm.createDirectory(at: stage, withIntermediateDirectories: true)
 
@@ -284,7 +284,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     /// Menu action: pick where to save the zip, then show it in Finder.
     private func exportLogs() {
         let panel = NSSavePanel()
-        panel.nameFieldStringValue = "Teams Bridge Logs \(Date().formatted(.iso8601.year().month().day())).zip"
+        panel.nameFieldStringValue = "Deckhand Logs \(Date().formatted(.iso8601.year().month().day())).zip"
         panel.allowedContentTypes = [.zip]
         panel.directoryURL = FileManager.default.urls(for: .desktopDirectory, in: .userDomainMask).first
         panel.message = "Saves the log files plus a diagnostics report (which includes your Teams window titles) as a zip."

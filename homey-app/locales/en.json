@@ -1,1 +1,15 @@
-{}
+{
+  "device": {
+    "connecting": "Connecting to Deckhand…",
+    "unreachable": "Can't reach Deckhand. Is the Mac awake, and is Deckhand running?",
+    "address_required": "Enter the Mac's address."
+  },
+  "pair": {
+    "address": {
+      "title": "Connect to Deckhand",
+      "label": "Address of the Mac running Deckhand",
+      "hint": "Its IP address or name, e.g. 192.168.1.50. The port is 8942 unless you changed it.",
+      "connect": "Connect"
+    }
+  }
+}

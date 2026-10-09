@@ -1,8 +1,13 @@
 {
-    "name": "com.teams-bridge",
-    "version": "1.0.0",
-    "main": "app.js",
-    "dependencies": {
-        "ws": "^8.18.0"
-    }
+  "name": "com.treeiler.deckhand",
+  "version": "1.0.0",
+  "main": "app.js",
+  "dependencies": {
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "homey": "^4.6.0"
+  },
+  "private": true,
+  "license": "MIT"
 }

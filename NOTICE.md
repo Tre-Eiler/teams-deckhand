@@ -1,6 +1,6 @@
 # Third-party notices
 
-Teams Deckhand is MIT-licensed (see [LICENSE](LICENSE)). It builds on:
+Deckhand is MIT-licensed (see [LICENSE](LICENSE)). It builds on:
 
 | Component | Used for | License |
 |---|---|---|

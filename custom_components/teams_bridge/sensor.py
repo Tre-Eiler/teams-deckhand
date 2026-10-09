@@ -1,4 +1,4 @@
-"""Sensors for Teams Bridge."""
+"""Sensors for Deckhand."""
 from __future__ import annotations
 
 from collections.abc import Callable

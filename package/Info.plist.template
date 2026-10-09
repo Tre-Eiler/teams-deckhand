@@ -7,9 +7,9 @@
     <key>CFBundleIdentifier</key>
     <string>com.teams-bridge.daemon</string>
     <key>CFBundleName</key>
-    <string>Teams Bridge</string>
+    <string>Deckhand</string>
     <key>CFBundleDisplayName</key>
-    <string>Teams Bridge</string>
+    <string>Deckhand</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleIconFile</key>
@@ -25,6 +25,6 @@
     <key>NSHighResolutionCapable</key>
     <true/>
     <key>NSMicrophoneUsageDescription</key>
-    <string>Teams Bridge measures your microphone level to detect when you've stopped talking so auto-mute can mute you. Audio is never recorded or sent anywhere.</string>
+    <string>Deckhand measures your microphone level to detect when you've stopped talking so auto-mute can mute you. Audio is never recorded or sent anywhere.</string>
 </dict>
 </plist>

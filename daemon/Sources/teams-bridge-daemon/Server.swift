@@ -152,7 +152,7 @@ final class BridgeServer {
             guard let url = self?.logArchive?(), let data = try? Data(contentsOf: url) else { return .internalServerError }
             try? FileManager.default.removeItem(at: url)
             return .raw(200, "OK", ["Content-Type": "application/zip",
-                                    "Content-Disposition": "attachment; filename=\"Teams Bridge Logs.zip\""], { writer in
+                                    "Content-Disposition": "attachment; filename=\"Deckhand Logs.zip\""], { writer in
                 try writer.write([UInt8](data))
             })
         }

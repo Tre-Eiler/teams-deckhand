@@ -21,7 +21,7 @@ enum Permissions {
     /// is denied while Settings shows it allowed. Flipping the toggle doesn't
     /// rewrite the row; resetting it and asking again does.
     static let staleGrantHint =
-        "If \"Teams Bridge\" is already switched on in Privacy & Security → \(accessibilityPaneName) but this still shows as not allowed, the entry is stale (it was granted to an older build). Use \"Reset Permission & Ask Again\" in the menu bar menu."
+        "If \"Deckhand\" is already switched on in Privacy & Security → \(accessibilityPaneName) but this still shows as not allowed, the entry is stale (it was granted to an older build). Use \"Reset Permission & Ask Again\" in the menu bar menu."
 
     /// Resets our Accessibility entry and shows the system prompt again.
     /// Returns what `tccutil` said, for the log.

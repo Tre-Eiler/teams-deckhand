@@ -352,22 +352,37 @@ final class TeamsAutomationEngine {
     /// Presses Teams' Leave button, then waits for the call to actually end.
     /// Sometimes Teams asks "are you sure?" with a second Leave button; if the
     /// call is still up shortly after the first press, that one is pressed
-    /// too. (Leaving only — never "End meeting for everyone", which lives in
+    /// too. If the button can't be found, or the call is still up after about
+    /// two seconds, Teams' own hang-up shortcut (Cmd+Shift+H) is sent as a
+    /// backup. (Leaving only — never "End meeting for everyone", which lives in
     /// the button's dropdown and is never pressed here.)
     @discardableResult
     func leaveCall() -> Status {
         lock.lock(); defer { lock.unlock() }
         let before = _pollStatus(forceScan: true)
-        guard before.inCall, let hangUp = cachedHangUpElement else {
-            Log.warn("engine", before.inCall ? "Hang up requested but the Leave button wasn't found" : "Hang up requested but there's no call")
+        guard before.inCall else {
+            Log.warn("engine", "Hang up requested but there's no call")
             return before
         }
-        let result = AXUIElementPerformAction(hangUp, kAXPressAction as CFString)
-        if result != .success { Log.warn("engine", "Pressing Leave failed (AXError \(result.rawValue))") }
+        guard let app = cachedApp, let pid = cachedPid else { return before }
 
-        var report: [String: Any] = ["confirmationFound": false]
+        let hangUp = cachedHangUpElement
+        var report: [String: Any] = ["confirmationFound": false, "hotkeySent": false]
+        if let hangUp {
+            let result = AXUIElementPerformAction(hangUp, kAXPressAction as CFString)
+            if result != .success { Log.warn("engine", "Pressing Leave failed (AXError \(result.rawValue))") }
+        } else {
+            Log.warn("engine", "The Leave button wasn't found; using Teams' hang-up shortcut instead")
+        }
+
         var confirmed = false
-        for attempt in 1...16 {
+        var hotkeySent = false
+        for attempt in 1...20 {
+            if !hotkeySent && (hangUp == nil || attempt == 8) {
+                hotkeySent = true
+                report["hotkeySent"] = true
+                sendLeaveHotkey(to: pid, app: app)
+            }
             Thread.sleep(forTimeInterval: 0.25)
             cachedMicElement = nil
             cachedCameraElement = nil
@@ -375,32 +390,52 @@ final class TeamsAutomationEngine {
             cachedHangUpElement = nil
             let latest = _pollStatus(forceScan: true)
             if !latest.inCall {
-                Log.info("engine", "Left the call (controls gone after ~\(attempt * 250)ms\(confirmed ? ", after confirming" : ""))")
+                Log.info("engine", "Left the call (controls gone after ~\(attempt * 250)ms\(confirmed ? ", after confirming" : "")\(hotkeySent ? ", shortcut sent" : ""))")
                 lastLeaveReport = report
                 return latest
             }
 
             // Still in the call half a second on: look for an "are you sure?".
-            if !confirmed, attempt >= 2, let app = cachedApp {
+            if !confirmed, attempt >= 2 {
                 if let button = findLeaveConfirmation(in: app, excluding: hangUp) {
                     let pressed = AXUIElementPerformAction(button, kAXPressAction as CFString)
                     Log.info("engine", "Teams asked to confirm leaving; pressed its Leave button (\(pressed == .success ? "ok" : "AXError \(pressed.rawValue)"))")
                     confirmed = true
                     report["confirmationFound"] = true
                     report["confirmationPressedAtMs"] = attempt * 250
-                } else if attempt == 4 {
+                } else if attempt == 4 || attempt == 10 {
                     // Nothing found yet; keep what we can see for the diagnostics.
-                    report["buttonsVisible"] = leaveSurvey(in: app)
+                    report["buttonsVisible\(attempt)"] = leaveSurvey(in: app)
                 }
             }
         }
-        if report["confirmationFound"] as? Bool != true {
-            Log.warn("engine", "Pressed Leave but the call still looks active after 4s and no confirmation button was found (details are in Copy Diagnostics / Export Logs)")
-        } else {
-            Log.warn("engine", "Pressed Leave and its confirmation but the call still looks active after 4s")
-        }
+        Log.warn("engine", "Pressed Leave\(confirmed ? " and its confirmation" : "")\(hotkeySent ? " and sent the shortcut" : "") but the call still looks active after 5s\(confirmed ? "" : "; no confirmation button was found (details are in Copy Diagnostics / Export Logs)")")
         lastLeaveReport = report
         return _pollStatus()
+    }
+
+    /// Cmd+Shift+H, Teams' own "hang up" shortcut. Teams only acts on it in
+    /// the window that has focus, so its call window is raised first; the keys
+    /// are then posted to Teams' process alone, so a failed raise can never
+    /// send the shortcut to some other app.
+    private func sendLeaveHotkey(to pid: pid_t, app: AXUIElement) {
+        if !CGPreflightPostEventAccess() {
+            Log.warn("engine", "macOS may not allow Deckhand to post keystrokes; trying Teams' hang-up shortcut anyway")
+        }
+        _ = AXUIElementSetAttributeValue(app, kAXFrontmostAttribute as CFString, kCFBooleanTrue)
+        if let window = windows(of: app).first(where: { findControls(in: $0).controls.isCall }) {
+            _ = AXUIElementPerformAction(window, kAXRaiseAction as CFString)
+        }
+        Thread.sleep(forTimeInterval: 0.25)
+
+        let source = CGEventSource(stateID: .combinedSessionState)
+        let hKey: CGKeyCode = 4 // kVK_ANSI_H
+        for keyDown in [true, false] {
+            guard let event = CGEvent(keyboardEventSource: source, virtualKey: hKey, keyDown: keyDown) else { continue }
+            event.flags = [.maskCommand, .maskShift]
+            event.postToPid(pid)
+        }
+        Log.info("engine", "Sent Cmd+Shift+H to Teams")
     }
 
     private func buttonLabel(_ element: AXUIElement) -> String? {
@@ -427,7 +462,7 @@ final class TeamsAutomationEngine {
 
     /// The second "Leave" Teams shows when asking to confirm. Skips the call
     /// toolbar's own Leave button.
-    private func findLeaveConfirmation(in app: AXUIElement, excluding original: AXUIElement) -> AXUIElement? {
+    private func findLeaveConfirmation(in app: AXUIElement, excluding original: AXUIElement?) -> AXUIElement? {
         var visited = 0
         var match: AXUIElement?
         func rec(_ el: AXUIElement, depth: Int) {
@@ -435,7 +470,7 @@ final class TeamsAutomationEngine {
             visited += 1
             if stringAttr(el, kAXRoleAttribute) == "AXButton",
                stringAttr(el, "AXDOMIdentifier") != "hangup-button",
-               !CFEqual(el, original),
+               original.map({ !CFEqual(el, $0) }) ?? true,
                let label = buttonLabel(el),
                Self.leaveConfirmationLabels.contains(label.lowercased()) {
                 match = el

@@ -41,9 +41,10 @@ client of it.
 
 ## Install
 
-**Download** `Deckhand-<version>.pkg` from the
-[Releases page](https://github.com/Tre-Eiler/teams-deckhand/releases), or build
-it yourself (needs Xcode or the Command Line Tools, and Node 20+):
+**Download** the installer, `Deckhand.<version>.pkg`, from the
+[latest release](https://github.com/Tre-Eiler/teams-deckhand/releases/latest) (currently
+[1.4.0](https://github.com/Tre-Eiler/teams-deckhand/releases/download/v1.4.0/Deckhand.1.4.0.pkg)),
+or build it yourself (needs Xcode or the Command Line Tools, and Node 20+):
 
 ```bash
 git clone https://github.com/Tre-Eiler/teams-deckhand.git

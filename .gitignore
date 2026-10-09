@@ -10,10 +10,6 @@ streamdeck-plugin/com.teams-bridge.streamdeck.sdPlugin/bin/
 streamdeck-plugin/com.teams-bridge.streamdeck.sdPlugin/logs/
 streamdeck-plugin/*.streamDeckPlugin
 
-# Icons rendered from Apple's SF Symbols on your own Mac (see README).
-# Apple's license doesn't allow redistributing the rendered artwork.
-streamdeck-plugin/com.teams-bridge.streamdeck.sdPlugin/imgs/
-
 # Packaged bundles (regenerate with ./package.sh)
 dist/
 

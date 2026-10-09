@@ -37,12 +37,13 @@ client of it.
 - macOS 13 or later (works on macOS 27), Apple silicon or Intel
 - New Microsoft Teams (`com.microsoft.teams2`)
 - Stream Deck app 7.6+ (for the Neo panel; other devices work with the keys)
-- To build from source: Xcode (or the Command Line Tools) and Node 20+
+- Only to build from source: Xcode (or the Command Line Tools) and Node 20+
 
 ## Install
 
-There are no prebuilt downloads: the installer is built on your own Mac, because
-the icons are drawn from Apple's SF Symbols, which can't be redistributed.
+**Download** `Deckhand-<version>.pkg` from the
+[Releases page](https://github.com/Tre-Eiler/teams-deckhand/releases), or build
+it yourself (needs Xcode or the Command Line Tools, and Node 20+):
 
 ```bash
 git clone https://github.com/Tre-Eiler/teams-deckhand.git
@@ -275,7 +276,7 @@ Stream Deck plugin:
 ```bash
 cd streamdeck-plugin
 npm install
-npm run icons     # draws the icons from SF Symbols (required once; they aren't in git)
+npm run icons     # optional: re-draws the icons from SF Symbols (the rendered ones are committed)
 npm run build
 npx @elgato/cli link com.teams-bridge.streamdeck.sdPlugin
 npm run watch

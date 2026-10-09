@@ -14,10 +14,18 @@ Deckhand is MIT-licensed (see [LICENSE](LICENSE)). It builds on:
 
 The Stream Deck key icons and the images the app draws on your keys use
 Apple's SF Symbols and SF Pro, drawn through the system's own APIs
-(`NSImage(systemSymbolName:)`, system fonts) on your Mac. **The rendered
-icon images are not included in this repository**, because Apple's licenses
-don't permit redistributing them: `npm run icons` (or `./package.sh`) draws
-them locally. Anything you build that way is for your own use.
+(`NSImage(systemSymbolName:)`, system fonts). The key images are drawn on your
+Mac at runtime and are never stored in this repository.
+
+The static icons under `streamdeck-plugin/com.teams-bridge.streamdeck.sdPlugin/imgs/`
+(and the copies inside the installer) are SF Symbols glyphs rendered to PNG by
+`tools/render-icons.swift`. They are included for convenience. Apple's SF
+Symbols license is aimed at use inside apps for Apple platforms and doesn't
+clearly grant the right to redistribute the artwork on its own, so Apple (or
+anyone with rights in them) can ask for them to be removed or replaced, and
+they will be. Reusing them in your own projects is at your own risk; check the
+[SF Symbols license](https://developer.apple.com/design/downloads/SF-Symbols/license.pdf) first.
+The MIT license of this project does **not** extend to them.
 
 ## Trademarks
 

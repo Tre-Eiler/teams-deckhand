@@ -340,9 +340,20 @@ final class TeamsAutomationEngine {
         return press(camera, label: "camera button", before: before) { $0.cameraEnabled != before.cameraEnabled }
     }
 
+    /// Labels of the confirmation dialog's button. Exact matches only — never
+    /// anything with "end" or "everyone" in it (that's "End meeting for
+    /// everyone", which is never pressed here).
+    private static let leaveConfirmationLabels: Set<String> = ["leave", "leave meeting", "leave call", "leave now", "leave anyway"]
+
+    /// What the last Leave attempt saw, for /diagnostics: whether Teams asked
+    /// to confirm and, if we couldn't find the button, what buttons it had.
+    private var lastLeaveReport: [String: Any]?
+
     /// Presses Teams' Leave button, then waits for the call to actually end.
-    /// (Leaving only — never "End meeting for everyone", which lives in the
-    /// button's dropdown and is never pressed here.)
+    /// Sometimes Teams asks "are you sure?" with a second Leave button; if the
+    /// call is still up shortly after the first press, that one is pressed
+    /// too. (Leaving only — never "End meeting for everyone", which lives in
+    /// the button's dropdown and is never pressed here.)
     @discardableResult
     func leaveCall() -> Status {
         lock.lock(); defer { lock.unlock() }
@@ -354,7 +365,9 @@ final class TeamsAutomationEngine {
         let result = AXUIElementPerformAction(hangUp, kAXPressAction as CFString)
         if result != .success { Log.warn("engine", "Pressing Leave failed (AXError \(result.rawValue))") }
 
-        for attempt in 1...12 {
+        var report: [String: Any] = ["confirmationFound": false]
+        var confirmed = false
+        for attempt in 1...16 {
             Thread.sleep(forTimeInterval: 0.25)
             cachedMicElement = nil
             cachedCameraElement = nil
@@ -362,12 +375,96 @@ final class TeamsAutomationEngine {
             cachedHangUpElement = nil
             let latest = _pollStatus(forceScan: true)
             if !latest.inCall {
-                Log.info("engine", "Left the call (controls gone after ~\(attempt * 250)ms)")
+                Log.info("engine", "Left the call (controls gone after ~\(attempt * 250)ms\(confirmed ? ", after confirming" : ""))")
+                lastLeaveReport = report
                 return latest
             }
+
+            // Still in the call half a second on: look for an "are you sure?".
+            if !confirmed, attempt >= 2, let app = cachedApp {
+                if let button = findLeaveConfirmation(in: app, excluding: hangUp) {
+                    let pressed = AXUIElementPerformAction(button, kAXPressAction as CFString)
+                    Log.info("engine", "Teams asked to confirm leaving; pressed its Leave button (\(pressed == .success ? "ok" : "AXError \(pressed.rawValue)"))")
+                    confirmed = true
+                    report["confirmationFound"] = true
+                    report["confirmationPressedAtMs"] = attempt * 250
+                } else if attempt == 4 {
+                    // Nothing found yet; keep what we can see for the diagnostics.
+                    report["buttonsVisible"] = leaveSurvey(in: app)
+                }
+            }
         }
-        Log.warn("engine", "Pressed Leave but the call still looks active after 3s (Teams may be asking to confirm)")
+        if report["confirmationFound"] as? Bool != true {
+            Log.warn("engine", "Pressed Leave but the call still looks active after 4s and no confirmation button was found (details are in Copy Diagnostics / Export Logs)")
+        } else {
+            Log.warn("engine", "Pressed Leave and its confirmation but the call still looks active after 4s")
+        }
+        lastLeaveReport = report
         return _pollStatus()
+    }
+
+    private func buttonLabel(_ element: AXUIElement) -> String? {
+        for name in [kAXTitleAttribute, kAXDescriptionAttribute, kAXValueAttribute] {
+            if let text = stringAttr(element, name)?.trimmingCharacters(in: .whitespacesAndNewlines), !text.isEmpty { return text }
+        }
+        // Chromium often puts a button's text in a child.
+        for child in children(element) {
+            if let text = stringAttr(child, kAXValueAttribute)?.trimmingCharacters(in: .whitespacesAndNewlines), !text.isEmpty { return text }
+            if let text = stringAttr(child, kAXTitleAttribute)?.trimmingCharacters(in: .whitespacesAndNewlines), !text.isEmpty { return text }
+        }
+        return nil
+    }
+
+    /// Every Teams window, plus the focused one (a dialog can be its own window).
+    private func allWindowsIncludingFocused(of app: AXUIElement) -> [AXUIElement] {
+        var all = windows(of: app)
+        if let focused = attr(app, kAXFocusedWindowAttribute), CFGetTypeID(focused) == AXUIElementGetTypeID() {
+            let element = focused as! AXUIElement
+            if !all.contains(where: { CFEqual($0, element) }) { all.append(element) }
+        }
+        return all
+    }
+
+    /// The second "Leave" Teams shows when asking to confirm. Skips the call
+    /// toolbar's own Leave button.
+    private func findLeaveConfirmation(in app: AXUIElement, excluding original: AXUIElement) -> AXUIElement? {
+        var visited = 0
+        var match: AXUIElement?
+        func rec(_ el: AXUIElement, depth: Int) {
+            if match != nil || visited > 25000 || depth > 45 { return }
+            visited += 1
+            if stringAttr(el, kAXRoleAttribute) == "AXButton",
+               stringAttr(el, "AXDOMIdentifier") != "hangup-button",
+               !CFEqual(el, original),
+               let label = buttonLabel(el),
+               Self.leaveConfirmationLabels.contains(label.lowercased()) {
+                match = el
+                return
+            }
+            for child in children(el) { rec(child, depth: depth + 1) }
+        }
+        for window in allWindowsIncludingFocused(of: app) { rec(window, depth: 0) }
+        return match
+    }
+
+    /// Roles, labels and DOM ids of the buttons Teams shows right now. Only
+    /// ever surfaced through diagnostics (which the person asks for), since
+    /// labels can include names.
+    private func leaveSurvey(in app: AXUIElement) -> [String] {
+        var lines: [String] = []
+        var visited = 0
+        func rec(_ el: AXUIElement, depth: Int) {
+            if lines.count >= 80 || visited > 25000 || depth > 45 { return }
+            visited += 1
+            let role = stringAttr(el, kAXRoleAttribute) ?? ""
+            if role == "AXButton" || role == "AXSheet" || role == "AXDialog" || stringAttr(el, kAXSubroleAttribute) == "AXDialog" {
+                let domId = stringAttr(el, "AXDOMIdentifier") ?? "-"
+                lines.append("\(role) | \(buttonLabel(el) ?? "(no label)") | id: \(domId)")
+            }
+            for child in children(el) { rec(child, depth: depth + 1) }
+        }
+        for window in allWindowsIncludingFocused(of: app) { rec(window, depth: 0) }
+        return lines
     }
 
     /// Dumb toggle: presses Teams' raise-hand button and flips our own
@@ -436,6 +533,7 @@ final class TeamsAutomationEngine {
             ]
         }
         report["callDetected"] = allWindows.contains { findControls(in: $0).controls.isCall }
+        if let lastLeaveReport { report["lastLeaveAttempt"] = lastLeaveReport }
         if !AXIsProcessTrusted() {
             report["hint"] = "Accessibility isn't allowed for this app (macOS 27 calls the pane \"\(Permissions.accessibilityPaneName)\"). " + Permissions.staleGrantHint
         } else if allWindows.isEmpty {
@@ -444,3 +542,4 @@ final class TeamsAutomationEngine {
         return report
     }
 }
+

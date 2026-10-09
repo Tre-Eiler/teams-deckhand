@@ -92,7 +92,8 @@ Actions, under the **Deckhand** category:
   hand state deep in the People panel.
 - **Hang Up** — leaves the call. **Hold** the key (default 1 s; set 0–5 in the
   key's settings) so a stray tap can't drop you; a quick tap flashes an alert.
-  It only *leaves*, never "End meeting for everyone".
+  It only *leaves*, never "End meeting for everyone". If Teams asks "are you
+  sure?" with a second **Leave** button, Deckhand presses that one too.
 - **Auto-Mute Toggle / Timeout / Add Time** — see [Auto-mute](#auto-mute).
 - **Status Panel** — drag onto the Neo's info strip. Shows the time and date, with
   mic and camera badges during a call, and takes over the whole panel for the last

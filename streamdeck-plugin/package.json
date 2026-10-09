@@ -1,0 +1,22 @@
+{
+    "name": "teams-bridge-streamdeck",
+    "private": true,
+    "scripts": {
+        "icons": "swiftc ../tools/render-icons.swift -o ../tools/render-icons && ../tools/render-icons com.teams-bridge.streamdeck.sdPlugin",
+        "build": "rolldown -c rolldown.config.ts",
+        "watch": "rolldown -c rolldown.config.ts -w"
+    },
+    "type": "module",
+    "devDependencies": {
+        "@elgato/cli": "^1.7.1",
+        "@tsconfig/node20": "^20.1.2",
+        "@types/node": "^20.19.0",
+        "@types/ws": "^8.5.10",
+        "rolldown": "^1.0.0-rc.6",
+        "typescript": "^5.2.2"
+    },
+    "dependencies": {
+        "@elgato/streamdeck": "^3.0.0",
+        "ws": "^8.18.0"
+    }
+}

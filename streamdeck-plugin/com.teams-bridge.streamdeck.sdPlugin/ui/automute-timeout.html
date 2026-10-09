@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<title>Auto-Mute Timeout Settings</title>
+		<meta charset="utf-8" />
+		<script src="sdpi-components.js"></script>
+	</head>
+
+	<body>
+		<sdpi-item label="Seconds">
+			<sdpi-textfield setting="seconds" placeholder="30" default="30" pattern="^[0-9]{1,4}$" required></sdpi-textfield>
+		</sdpi-item>
+		<sdpi-item>
+			<details>
+				<summary>How it works</summary>
+				<p>
+					Pressing this key makes auto-mute wait this many seconds of silence before muting your mic. Put several of
+					these on your deck with different values (5, 15, 30, 60&hellip;) to switch between them. The selected one
+					shows a live countdown.
+				</p>
+			</details>
+		</sdpi-item>
+	</body>
+</html>

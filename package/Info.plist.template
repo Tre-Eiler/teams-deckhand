@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleExecutable</key>
+    <string>teams-bridge-daemon</string>
+    <key>CFBundleIdentifier</key>
+    <string>com.teams-bridge.daemon</string>
+    <key>CFBundleName</key>
+    <string>Teams Bridge</string>
+    <key>CFBundleDisplayName</key>
+    <string>Teams Bridge</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleIconFile</key>
+    <string>AppIcon</string>
+    <key>CFBundleShortVersionString</key>
+    <string>__VERSION__</string>
+    <key>CFBundleVersion</key>
+    <string>__BUILD__</string>
+    <key>LSMinimumSystemVersion</key>
+    <string>13.0</string>
+    <key>LSUIElement</key>
+    <true/>
+    <key>NSHighResolutionCapable</key>
+    <true/>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Teams Bridge measures your microphone level to detect when you've stopped talking so auto-mute can mute you. Audio is never recorded or sent anywhere.</string>
+</dict>
+</plist>

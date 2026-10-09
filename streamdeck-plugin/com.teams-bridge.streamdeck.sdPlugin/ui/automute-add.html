@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<title>Auto-Mute Add Time Settings</title>
+		<meta charset="utf-8" />
+		<script src="sdpi-components.js"></script>
+	</head>
+
+	<body>
+		<sdpi-item label="Seconds to add">
+			<sdpi-textfield setting="seconds" placeholder="30" default="30" pattern="^[0-9]{1,4}$" required></sdpi-textfield>
+		</sdpi-item>
+		<sdpi-item>
+			<details>
+				<summary>How it works</summary>
+				<p>
+					Like +30 on a microwave: each press adds this many seconds to the running auto-mute countdown. It lasts
+					until your mic is muted, and doesn't change the saved timeout. If no countdown is running, the key shows
+					an alert.
+				</p>
+			</details>
+		</sdpi-item>
+	</body>
+</html>

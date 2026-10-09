@@ -1,0 +1,76 @@
+{
+    "id": "com.teams-bridge",
+    "version": "1.0.0",
+    "compatibility": ">=12.4.0",
+    "sdk": 3,
+    "runtime": "nodejs",
+    "platforms": ["local"],
+    "name": { "en": "Teams Bridge" },
+    "description": { "en": "Reports Microsoft Teams call, mic, and camera status from the teams-bridge daemon." },
+    "category": ["tools"],
+    "brandColor": "#2D64B4",
+    "permissions": [],
+    "images": {
+        "small": "/assets/images/small.png",
+        "large": "/assets/images/large.png",
+        "xlarge": "/assets/images/xlarge.png"
+    },
+    "author": {
+        "name": "Tre Eiler"
+    },
+    "drivers": [
+        {
+            "id": "teams-status",
+            "name": { "en": "Teams Status" },
+            "class": "sensor",
+            "capabilities": [
+                "alarm_generic.in_call",
+                "alarm_generic.mic_enabled",
+                "alarm_generic.camera_enabled"
+            ],
+            "capabilitiesOptions": {
+                "alarm_generic.in_call": {
+                    "title": { "en": "In a Call" }
+                },
+                "alarm_generic.mic_enabled": {
+                    "title": { "en": "Microphone Enabled" }
+                },
+                "alarm_generic.camera_enabled": {
+                    "title": { "en": "Camera Enabled" }
+                }
+            },
+            "platforms": ["local"],
+            "connectivity": ["lan"],
+            "images": {
+                "small": "/drivers/teams-status/assets/images/small.png",
+                "large": "/drivers/teams-status/assets/images/large.png",
+                "xlarge": "/drivers/teams-status/assets/images/xlarge.png"
+            },
+            "pair": [
+                {
+                    "id": "list_devices",
+                    "template": "list_devices",
+                    "navigation": { "next": "add_devices" }
+                },
+                { "id": "add_devices", "template": "add_devices" }
+            ],
+            "settings": [
+                {
+                    "type": "group",
+                    "label": { "en": "teams-bridge daemon" },
+                    "children": [
+                        {
+                            "id": "bridgeHost",
+                            "type": "text",
+                            "label": { "en": "Daemon address (host:port)" },
+                            "value": "localhost:8942",
+                            "hint": {
+                                "en": "The LAN address of the Mac running the teams-bridge daemon, e.g. 192.168.1.50:8942."
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

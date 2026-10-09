@@ -1,0 +1,196 @@
+{
+    "Name": "Teams Bridge",
+    "Version": "1.0.0.0",
+    "Author": "Tre Eiler",
+    "Actions": [
+        {
+            "Name": "Mic Toggle",
+            "UUID": "com.teams-bridge.streamdeck.mic",
+            "Icon": "imgs/actions/mic/icon",
+            "Tooltip": "Mute/unmute your Microsoft Teams mic (via the teams-bridge daemon).",
+            "Controllers": [
+                "Keypad"
+            ],
+            "UserTitleEnabled": true,
+            "DisableAutomaticStates": true,
+            "States": [
+                {
+                    "Image": "imgs/actions/mic/key-off",
+                    "TitleAlignment": "bottom",
+                    "Title": "Muted"
+                },
+                {
+                    "Image": "imgs/actions/mic/key-on",
+                    "TitleAlignment": "bottom",
+                    "Title": "Live"
+                }
+            ],
+            "SupportedInMultiActions": false
+        },
+        {
+            "Name": "Camera Toggle",
+            "UUID": "com.teams-bridge.streamdeck.camera",
+            "Icon": "imgs/actions/camera/icon",
+            "Tooltip": "Turn your Microsoft Teams camera on/off (via the teams-bridge daemon).",
+            "Controllers": [
+                "Keypad"
+            ],
+            "UserTitleEnabled": true,
+            "DisableAutomaticStates": true,
+            "States": [
+                {
+                    "Image": "imgs/actions/camera/key-off",
+                    "TitleAlignment": "bottom",
+                    "Title": "Off"
+                },
+                {
+                    "Image": "imgs/actions/camera/key-on",
+                    "TitleAlignment": "bottom",
+                    "Title": "On"
+                }
+            ],
+            "SupportedInMultiActions": false
+        },
+        {
+            "Name": "Raise Hand",
+            "UUID": "com.teams-bridge.streamdeck.hand",
+            "Icon": "imgs/actions/hand/icon",
+            "Tooltip": "Raise your hand in Microsoft Teams for 5 seconds, then auto-lower (via the teams-bridge daemon). Press again early to lower it right away.",
+            "Controllers": [
+                "Keypad"
+            ],
+            "UserTitleEnabled": true,
+            "DisableAutomaticStates": true,
+            "States": [
+                {
+                    "Image": "imgs/actions/hand/key-off",
+                    "TitleAlignment": "bottom",
+                    "Title": ""
+                },
+                {
+                    "Image": "imgs/actions/hand/key-on",
+                    "TitleAlignment": "bottom",
+                    "Title": "Raised"
+                }
+            ],
+            "SupportedInMultiActions": false
+        },
+        {
+            "Name": "Status Panel",
+            "UUID": "com.teams-bridge.streamdeck.neo-status",
+            "Icon": "imgs/actions/neo-status/icon",
+            "Tooltip": "Shows time/date and call/mic/camera status on the Stream Deck Neo info panel.",
+            "Controllers": [
+                "Neo"
+            ],
+            "States": [
+                {
+                    "Image": "imgs/actions/neo-status/key"
+                }
+            ]
+        },
+        {
+            "Name": "Auto-Mute Toggle",
+            "UUID": "com.teams-bridge.streamdeck.automute",
+            "Icon": "imgs/actions/automute/icon",
+            "Tooltip": "Turn auto-mute on or off. When on, your Teams mic is muted after a stretch of silence.",
+            "Controllers": [
+                "Keypad"
+            ],
+            "UserTitleEnabled": true,
+            "DisableAutomaticStates": true,
+            "States": [
+                {
+                    "Image": "imgs/actions/automute/key-off",
+                    "TitleAlignment": "bottom",
+                    "Title": "Auto off"
+                },
+                {
+                    "Image": "imgs/actions/automute/key-on",
+                    "TitleAlignment": "bottom",
+                    "Title": "Auto on"
+                }
+            ],
+            "SupportedInMultiActions": false
+        },
+        {
+            "Name": "Auto-Mute Timeout",
+            "UUID": "com.teams-bridge.streamdeck.automute-timeout",
+            "Icon": "imgs/actions/automute-timeout/icon",
+            "Tooltip": "An auto-mute timeout preset: press to mute after this many seconds of silence. The selected preset shows a live countdown.",
+            "Controllers": [
+                "Keypad"
+            ],
+            "PropertyInspectorPath": "ui/automute-timeout.html",
+            "UserTitleEnabled": false,
+            "States": [
+                {
+                    "Image": "imgs/actions/automute-timeout/key"
+                }
+            ],
+            "SupportedInMultiActions": false
+        },
+        {
+            "Name": "Auto-Mute Add Time",
+            "UUID": "com.teams-bridge.streamdeck.automute-add",
+            "Icon": "imgs/actions/automute-add/icon",
+            "Tooltip": "Adds time to the running auto-mute countdown, like +30 on a microwave. Doesn't change the saved timeout.",
+            "Controllers": [
+                "Keypad"
+            ],
+            "PropertyInspectorPath": "ui/automute-add.html",
+            "UserTitleEnabled": false,
+            "States": [
+                {
+                    "Image": "imgs/actions/automute-add/key"
+                }
+            ],
+            "SupportedInMultiActions": false
+        },
+        {
+            "Name": "Hang Up",
+            "UUID": "com.teams-bridge.streamdeck.hangup",
+            "Icon": "imgs/actions/hangup/icon",
+            "Tooltip": "Hold to leave the Microsoft Teams call (it never ends the meeting for everyone). Hold time is set in the key's settings; 0 is instant.",
+            "Controllers": [
+                "Keypad"
+            ],
+            "PropertyInspectorPath": "ui/hangup.html",
+            "UserTitleEnabled": true,
+            "DisableAutomaticStates": true,
+            "States": [
+                {
+                    "Image": "imgs/actions/hangup/key-off",
+                    "TitleAlignment": "bottom",
+                    "Title": ""
+                },
+                {
+                    "Image": "imgs/actions/hangup/key-on",
+                    "TitleAlignment": "bottom",
+                    "Title": "Hold"
+                }
+            ],
+            "SupportedInMultiActions": false
+        }
+    ],
+    "Category": "Teams Bridge",
+    "CategoryIcon": "imgs/plugin/category-icon",
+    "CodePath": "bin/plugin.js",
+    "Description": "Mute/unmute, toggle camera, raise/lower hand, auto-mute after silence, and show call status in Microsoft Teams from your Stream Deck, backed by the local teams-bridge daemon.",
+    "Icon": "imgs/plugin/marketplace",
+    "SDKVersion": 3,
+    "Software": {
+        "MinimumVersion": "7.6"
+    },
+    "OS": [
+        {
+            "Platform": "mac",
+            "MinimumVersion": "12"
+        }
+    ],
+    "Nodejs": {
+        "Version": "20",
+        "Debug": "enabled"
+    },
+    "UUID": "com.teams-bridge.streamdeck"
+}

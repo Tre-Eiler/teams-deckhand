@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.teams-bridge.daemon</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Applications/Teams Bridge.app/Contents/MacOS/teams-bridge-daemon</string>
+    </array>
+    <key>RunAtLoad</key>
+    <true/>
+    <!-- Relaunch after a crash, but let Quit from the menu bar actually quit. -->
+    <key>KeepAlive</key>
+    <dict>
+        <key>SuccessfulExit</key>
+        <false/>
+    </dict>
+    <key>ProcessType</key>
+    <string>Interactive</string>
+    <!-- It drives other apps' UI, so it only makes sense inside a graphical login session. -->
+    <key>LimitLoadToSessionType</key>
+    <string>Aqua</string>
+</dict>
+</plist>

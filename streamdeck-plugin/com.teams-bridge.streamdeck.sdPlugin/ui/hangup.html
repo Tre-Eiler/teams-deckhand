@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<title>Hang Up Settings</title>
+		<meta charset="utf-8" />
+		<script src="sdpi-components.js"></script>
+	</head>
+
+	<body>
+		<sdpi-item label="Hold (seconds)">
+			<sdpi-textfield setting="holdSeconds" placeholder="1" default="1" pattern="^[0-5](\.[0-9]+)?$" required></sdpi-textfield>
+		</sdpi-item>
+		<sdpi-item>
+			<details>
+				<summary>How it works</summary>
+				<p>
+					Hold the key this long to leave the Teams call, so a stray tap can't hang up on someone. Set 0 for an
+					instant hang-up (maximum 5). It only ever <b>leaves</b> the call &mdash; it never ends the meeting for
+					everyone. Red while you're in a call, grey otherwise.
+				</p>
+			</details>
+		</sdpi-item>
+	</body>
+</html>

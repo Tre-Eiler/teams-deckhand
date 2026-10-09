@@ -1,0 +1,25 @@
+# Swift
+daemon/.build/
+daemon/.swiftpm/
+spike/spike
+tools/render-icons
+
+# Node
+node_modules/
+streamdeck-plugin/com.teams-bridge.streamdeck.sdPlugin/bin/
+streamdeck-plugin/com.teams-bridge.streamdeck.sdPlugin/logs/
+streamdeck-plugin/*.streamDeckPlugin
+
+# Icons rendered from Apple's SF Symbols on your own Mac (see README).
+# Apple's license doesn't allow redistributing the rendered artwork.
+streamdeck-plugin/com.teams-bridge.streamdeck.sdPlugin/imgs/
+
+# Packaged bundles (regenerate with ./package.sh)
+dist/
+
+# Homey
+homey-app/.homeybuild/
+homey-app/env.json
+
+# macOS
+.DS_Store

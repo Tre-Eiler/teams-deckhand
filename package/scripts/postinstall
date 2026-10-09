@@ -1,0 +1,58 @@
+#!/bin/bash
+# Runs as root after the files are in place. Starts the login agent for the
+# person at the console, hands the Stream Deck plugin to Stream Deck, and
+# clears out an older per-user (script-based) install of the same daemon.
+#
+# Never fails the install: if nobody is logged in the agent simply starts at
+# their next login, and a missing Stream Deck just means no plugin install.
+
+APP="/Applications/Teams Bridge.app"
+LABEL="com.teams-bridge.daemon"
+AGENT="/Library/LaunchAgents/$LABEL.plist"
+PLUGIN="$APP/Contents/Resources/Teams Bridge.streamDeckPlugin"
+STREAM_DECK_BUNDLE_ID="com.elgato.StreamDeck"
+BUNDLE_ID="com.teams-bridge.daemon"
+LSREGISTER="/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework/Versions/A/Support/lsregister"
+
+user="$(stat -f%Su /dev/console 2>/dev/null)"
+if [ -z "$user" ] || [ "$user" = "root" ] || [ "$user" = "loginwindow" ]; then
+    exit 0
+fi
+uid="$(id -u "$user")"
+home="$(dscl . -read "/Users/$user" NFSHomeDirectory 2>/dev/null | awk '{print $2}')"
+
+# An earlier install put a per-user agent with this same label (and its own
+# copy of the binary) under the home folder. Remove it so only one runs; the
+# settings file next to it is kept — the new app reads the same one.
+launchctl bootout "gui/$uid/$LABEL" 2>/dev/null
+if [ -n "$home" ]; then
+    rm -f "$home/Library/LaunchAgents/$LABEL.plist"
+    rm -f "$home/Library/Application Support/TeamsBridge/teams-bridge-daemon"
+fi
+
+# macOS records Accessibility/Microphone grants against the app's code
+# signature, and every build is signed differently. After an upgrade the old
+# entries are still listed (even switched on) but no longer match, so the new
+# app is silently denied. Clear them so the new copy asks fresh. Accessibility
+# can live in either the system or the user's privacy database; reset both.
+#
+# tccutil only accepts bundle IDs LaunchServices knows, and a just-installed
+# app isn't necessarily registered yet (registration is per user), so
+# register it first or the reset silently does nothing.
+[ -x "$LSREGISTER" ] && "$LSREGISTER" -f "$APP" >/dev/null 2>&1
+[ -x "$LSREGISTER" ] && launchctl asuser "$uid" sudo -u "$user" "$LSREGISTER" -f "$APP" >/dev/null 2>&1
+tccutil reset Accessibility "$BUNDLE_ID" >/dev/null 2>&1
+for service in Accessibility Microphone; do
+    launchctl asuser "$uid" sudo -u "$user" tccutil reset "$service" "$BUNDLE_ID" >/dev/null 2>&1
+done
+
+# bootout is asynchronous; bootstrapping straight away can race it.
+sleep 1
+launchctl bootstrap "gui/$uid" "$AGENT" 2>/dev/null
+
+# Stream Deck asks the user to confirm installing the plugin.
+if [ -f "$PLUGIN" ]; then
+    launchctl asuser "$uid" sudo -u "$user" open -b "$STREAM_DECK_BUNDLE_ID" "$PLUGIN" 2>/dev/null
+fi
+
+exit 0

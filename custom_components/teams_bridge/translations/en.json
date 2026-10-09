@@ -1,0 +1,20 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to Teams Bridge",
+        "description": "Enter the address of the Mac that runs the Teams Bridge app. The port is 8942 unless you changed it.",
+        "data": {
+          "host": "Host or IP address",
+          "port": "Port"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Couldn't reach Teams Bridge there. Check the address, that the app is running on the Mac (it shows in the menu bar), and that Home Assistant can reach that Mac on your network."
+    },
+    "abort": {
+      "already_configured": "That Teams Bridge is already set up."
+    }
+  }
+}

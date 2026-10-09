@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+    body { font-family: -apple-system, "SF Pro Text", Helvetica, sans-serif; font-size: 13px; line-height: 1.45; }
+    h2 { font-weight: 600; margin-bottom: 4px; }
+    li { margin-bottom: 6px; }
+    code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12px; }
+    .dim { color: #86868b; }
+</style>
+</head>
+<body>
+<h2>Installed</h2>
+<p>Teams Bridge is running (look for it in the menu bar). Two quick steps to finish:</p>
+
+<ol>
+    <li><b>Allow Teams Bridge to control Teams.</b> macOS will ask &mdash; or open <b>System Settings &rarr; Privacy &amp; Security</b> and switch on <b>Teams Bridge</b> under <b>Accessibility</b> (on macOS 27 this pane is called <b>Device Control and Data Access</b>). This is how it presses Teams' mute and camera buttons and sees when you're in a call. If it's already switched on but the menu bar icon still shows a warning, choose <b>Reset Permission &amp; Ask Again&hellip;</b> from the Teams Bridge menu.</li>
+    <li><b>Add the Stream Deck plugin.</b> Confirm the prompt Stream Deck shows, then drag actions from the <b>Teams Bridge</b> category onto your keys. If you missed the prompt, use <b>Install Stream Deck Plugin&hellip;</b> from the Teams Bridge menu bar icon.</li>
+</ol>
+
+<p>The first time you switch on <b>auto-mute</b>, macOS also asks for <b>Microphone</b> access. It only measures loudness &mdash; audio is never recorded or sent anywhere.</p>
+
+<p><b>If something isn't working,</b> click the Teams Bridge icon in the menu bar &mdash; it says what's missing (permission to control Teams, Teams not running, no call detected, microphone not audible). <b>Export Logs&hellip;</b> in that menu saves a zip of logs and diagnostics you can send for troubleshooting.</p>
+
+<p>macOS may also show &ldquo;Teams Bridge added items that can run in the background&rdquo; &mdash; keep it allowed (System Settings &rarr; General &rarr; Login Items &amp; Extensions), or it won't start at login.</p>
+
+<p>Check it any time with <code>curl localhost:8942/status</code> in Terminal.</p>
+<p class="dim">Homey: the Homey app is installed on your Homey Pro, not on this Mac. If this Mac's address changed, update the device's <i>Daemon address</i> setting in Homey.</p>
+</body>
+</html>

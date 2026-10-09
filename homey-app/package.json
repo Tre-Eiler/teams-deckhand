@@ -1,0 +1,8 @@
+{
+    "name": "com.teams-bridge",
+    "version": "1.0.0",
+    "main": "app.js",
+    "dependencies": {
+        "ws": "^8.18.0"
+    }
+}
